@@ -1,6 +1,8 @@
--- SQL script to rank country origins of bands by number of fans
-SELECT origin, SUM(nb_fans) AS nb_fans
-FROM metal_bands
+SELECT origin, COUNT(*) AS total_fans
+FROM (
+  SELECT origin, COUNT(*) AS nb_fans
+  FROM metal_bands
+  GROUP BY origin
+) AS subquery
 GROUP BY origin
-ORDER BY nb_fans DESC;
-
+ORDER BY total_fans DESC;
