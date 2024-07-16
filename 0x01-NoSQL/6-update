@@ -1,7 +1,6 @@
-// my comment
-db = db.getSiblingDB(db.getName());
-db.school.updateMany(
-    { name: 'Holberton school' },
-    { $set: { address: '972 Mission street' } }
-);
-
+// Update
+db.school.update(
+    { name: "Holberton school" },
+    { $set: { address: "972 Mission street" } },
+    { multi: true }
+)
