@@ -1,0 +1,4 @@
+// my comment
+db = db.getSiblingDB(db.getName());
+db.school.insert({ name: 'Holberton school' });
+
