@@ -1,4 +1,2 @@
-// my comment
-db = db.getSiblingDB(db.getName());
-print(db.school.countDocuments());
-
+// Count
+db.school.count()
