@@ -75,6 +75,19 @@ class Cache:
         """
         return self.get(key, int)
 
+    def increment(self, key: str, amount: int = 1) -> int:
+        """
+        Increment the value of a key by a specified amount.
+
+        Args:
+            key (str): The key to increment in Redis.
+            amount (int, optional): The amount to increment by. Defaults to 1.
+
+        Returns:
+            int: The new value after incrementing.
+        """
+        return self._redis.incr(key, amount)
+
 if __name__ == "__main__":
     cache = Cache()
 
@@ -94,4 +107,10 @@ if __name__ == "__main__":
 
     local_redis = redis.Redis()
     print(local_redis.get(key))
+
+    # Testing increment
+    increment_key = cache.store(10)
+    print(cache.get_int(increment_key))
+    cache.increment(increment_key, 5)
+    print(cache.get_int(increment_key))
 
