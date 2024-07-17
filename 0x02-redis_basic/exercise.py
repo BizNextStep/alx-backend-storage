@@ -53,6 +53,24 @@ def call_history(method: Callable) -> Callable:
         return output
     return wrapper
 
+def replay(method: Callable):
+    """
+    Display the history of calls of a particular function.
+
+    Args:
+        method (Callable): The method to replay history for.
+    """
+    input_key = f"{method.__qualname__}:inputs"
+    output_key = f"{method.__qualname__}:outputs"
+
+    redis_instance = method.__self__._redis
+    inputs = redis_instance.lrange(input_key, 0, -1)
+    outputs = redis_instance.lrange(output_key, 0, -1)
+
+    print(f"{method.__qualname__} was called {len(inputs)} times:")
+    for input_, output in zip(inputs, outputs):
+        print(f"{method.__qualname__}(*{input_.decode('utf-8')}) -> {output.decode('utf-8')}")
+
 class Cache:
     """
     Cache class to interact with Redis and store data.
@@ -139,11 +157,11 @@ class Cache:
 if __name__ == "__main__":
     cache = Cache()
 
-    s1 = cache.store("first")
+    s1 = cache.store("foo")
     print(s1)
-    s2 = cache.store("second")
+    s2 = cache.store("bar")
     print(s2)
-    s3 = cache.store("third")
+    s3 = cache.store(42)
     print(s3)
 
     inputs = cache._redis.lrange(f"{cache.store.__qualname__}:inputs", 0, -1)
@@ -151,6 +169,8 @@ if __name__ == "__main__":
 
     print("inputs: {}".format(inputs))
     print("outputs: {}".format(outputs))
+
+    replay(cache.store)
 
     # Testing increment
     increment_key = cache.store(10)
